@@ -30,8 +30,9 @@ RUN requirements="libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev l
 #     && find . -type f -exec chmod 660 {} \; \
 #     && chmod u+x bin/magento
 
-COPY "memory-limit-php.ini" "/usr/local/etc/php/conf.d/memory-limit-php.ini"
 WORKDIR $INSTALL_DIR
+COPY "memory-limit-php.ini" "/usr/local/etc/php/conf.d/memory-limit-php.ini"
+
 
 # RUN composer config http-basic.repo.magento.com adf97a28c4f6f0c1e6a8f3d9f11cc448 bdec1caff6c7d5632054b1c08ed4cf7b
 # RUN bin/magento sampledata:deploy
