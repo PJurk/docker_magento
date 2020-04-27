@@ -24,7 +24,7 @@ then
     cd ..
     docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
     echo "Deploying sample data"
-    docker exec -it my-magento bin/magento sampledata:deploy
+    docker exec -it my-magento -dmemory_limit=5G bin/magento sampledata:deploy
     echo "Sample data deployed, configuring magento user"
     docker exec -it my-magento chmod u+x bin/magento
     echo "Install magento now"
