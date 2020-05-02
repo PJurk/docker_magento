@@ -15,7 +15,7 @@ services:
     env_file:
       - env
   db:
-    image: mysql:latest
+    image: mysql:5.7
     volumes:
       - ./db:/var/lib/mysql
     env_file:

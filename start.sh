@@ -23,12 +23,14 @@ then
     composer install --no-interaction --ignore-platform-reqs
     cd ..
     docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
-    echo "Deploying sample data"
-    docker exec -it my-magento -dmemory_limit=5G bin/magento sampledata:deploy
-    echo "Sample data deployed, configuring magento user"
+    echo "Configuring magento user"
+    #docker exec -it my-magento chown -R magento /var/www/html
+    #docker exec -it my-magento chmod -R 775 /var/www/html/
     docker exec -it my-magento chmod u+x bin/magento
+    echo "Deploying sample data"
+    docker exec -it my-magento php -dmemory_limit=5G bin/magento sampledata:deploy  
     echo "Install magento now"
-    docker exec -it my-magento bin/magento setup:install --base-url=$MAGENTO_URL --backend-frontname=$MAGENTO_BACKEND_FRONTNAME --language=$MAGENTO_LANGUAGE --timezone=$MAGENTO_TIMEZONE --currency=$MAGENTO_DEFAULT_CURRENCY --db-host=$MYSQL_HOST --db-name=$MYSQL_DATABASE --db-user=$MYSQL_USER --db-password=$MYSQL_PASSWORD --admin-firstname=$MAGENTO_ADMIN_FIRSTNAME --admin-lastname=$MAGENTO_ADMIN_LASTNAME --admin-email=$MAGENTO_ADMIN_EMAIL --admin-user=$MAGENTO_ADMIN_USERNAME --admin-password=$MAGENTO_ADMIN_PASSWORD
+    #docker exec -it my-magento bin/magento setup:install --base-url=$MAGENTO_URL --backend-frontname=$MAGENTO_BACKEND_FRONTNAME --language=$MAGENTO_LANGUAGE --timezone=$MAGENTO_TIMEZONE --currency=$MAGENTO_DEFAULT_CURRENCY --db-host=$MYSQL_HOST --db-name=$MYSQL_DATABASE --db-user=$MYSQL_USER --db-password=$MYSQL_PASSWORD --admin-firstname=$MAGENTO_ADMIN_FIRSTNAME --admin-lastname=$MAGENTO_ADMIN_LASTNAME --admin-email=$MAGENTO_ADMIN_EMAIL --admin-user=$MAGENTO_ADMIN_USERNAME --admin-password=$MAGENTO_ADMIN_PASSWORD
     echo "Magento installed"
 else
     docker-compose up -d

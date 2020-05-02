@@ -24,12 +24,11 @@ RUN requirements="libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev l
     && docker-php-ext-install bcmath \
     && docker-php-ext-install sockets
 
-#RUN  composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition $INSTALL_DIR
-# RUN cd $INSTALL_DIR \
-#     && find . -type d -exec chmod 770 {} \; \
-#     && find . -type f -exec chmod 660 {} \; \
-#     && chmod u+x bin/magento
-
+RUN echo 127.0.0.1 www.magento.test.com magento.test.com >> "/etc/hosts"
+COPY "magento.test.com.conf" "/etc/apache2/sites-available/magento.test.com.conf"
+COPY "apache2.conf" "/etc/apache2/apache2.conf"
+RUN rm -rf "/etc/apache2/sites-available/000-default.conf"
+RUN rm -rf "/etc/apache2/sites-available/default-ssl.conf"
 WORKDIR $INSTALL_DIR
 COPY "memory-limit-php.ini" "/usr/local/etc/php/conf.d/memory-limit-php.ini"
 
@@ -37,3 +36,6 @@ COPY "memory-limit-php.ini" "/usr/local/etc/php/conf.d/memory-limit-php.ini"
 # RUN composer config http-basic.repo.magento.com adf97a28c4f6f0c1e6a8f3d9f11cc448 bdec1caff6c7d5632054b1c08ed4cf7b
 # RUN bin/magento sampledata:deploy
 RUN a2enmod rewrite
+RUN useradd -d /var/www -g www-data magento
+RUN chown -R magento /var/www
+RUN chmod -R 777 /var/www
