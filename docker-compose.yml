@@ -1,5 +1,11 @@
 version: '3.0'
 services:
+  # temp-mount:
+  #   image: php:7.2-apache
+  #   container_name: mount
+  #   volumes:
+  #     - ./app:/app
+  #     - magento-app:/app
   magento:
     build: 
       context: ./
@@ -14,6 +20,8 @@ services:
       - ./app:/var/www/html  
     env_file:
       - env
+    # depends_on: 
+    #   - temp-mount
   db:
     image: mysql:5.7
     volumes:
@@ -46,3 +54,6 @@ services:
   #     - "5050:5050"
   #   volumes:
   #     - ./app/dev/tests/acceptance/tests/_output/allure-results:/app/allure-results
+
+# volumes: 
+#   magento-app:

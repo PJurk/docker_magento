@@ -12,8 +12,9 @@ fi
 if [ ! -d $WORKDIR ]
 then
     mkdir $WORKDIR
-    docker-compose up -d --build
-    docker exec -it my-magento chmod -R 755 .
+    docker-compose build --build-arg userID=$(id -u)
+    docker-compose up -d 
+    #docker exec -it my-magento chmod -R 755 .
     echo "Creating magento project"
     docker exec -it my-magento composer create-project --no-install --repository-url=https://repo.magento.com/ magento/project-community-edition .   
     #docker run --rm -it -m 2g --oom-kill-disable  --volume /$PWD/app:/app composer install --ignore-platform-reqs

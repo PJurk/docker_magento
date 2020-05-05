@@ -4,6 +4,9 @@ ENV INSTALL_DIR /var/www/html
 ENV COMPOSER_HOME /var/www/.composer/
 ENV MAGENTO /bin/magento
 
+ARG userID
+#ARG groupID
+
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer
 COPY ./auth.json $COMPOSER_HOME
@@ -36,6 +39,7 @@ COPY "memory-limit-php.ini" "/usr/local/etc/php/conf.d/memory-limit-php.ini"
 # RUN composer config http-basic.repo.magento.com adf97a28c4f6f0c1e6a8f3d9f11cc448 bdec1caff6c7d5632054b1c08ed4cf7b
 # RUN bin/magento sampledata:deploy
 RUN a2enmod rewrite
-RUN useradd -d /var/www -g www-data magento
+RUN useradd -d /var/www --uid ${userID} -g www-data magento
+RUN chgrp -R www-data /var/www
 RUN chown -R magento /var/www
 RUN chmod -R 777 /var/www
