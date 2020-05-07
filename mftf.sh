@@ -13,7 +13,10 @@ docker exec -it my-magento vendor/bin/mftf generate:tests
 docker cp ./env.mftf my-magento:/var/www/html/dev/tests/acceptance/.env
 docker exec -it my-magento chmod -R 777 ./
 docker-compose down
-sed 's/#//' docker-compose.yml docker-compose.yml
+touch temp.yml
+sed 's/#//' docker-compose.yml >> temp.yml
+mv docker-compose.yml old-docker-compose.yml
+mv temp.yml docker-compose.yml
 docker-compose up -d
 ./copyfromcontainer.sh
 docker exec -it my-magento vendor/bin/codecept run functional -c dev/tests/acceptance/codeception.yml
