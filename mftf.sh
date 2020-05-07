@@ -1,5 +1,3 @@
-# docker-compose down
-# sed 's/#//' docker-compose.yml
 docker-compose up -d
 echo "Configuring for mftf"
 docker exec -it my-magento bin/magento config:set cms/wysiwyg/enabled disabled
