@@ -1,14 +1,12 @@
-FROM php:7.2-apache
+FROM php:7.2.30-apache-buster
 
 ENV INSTALL_DIR /var/www/html
-ENV COMPOSER_HOME /var/www/.composer/
+ENV COMPOSER_HOME /usr/local/bin
 ENV MAGENTO /bin/magento
 
-RUN curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
-COPY ./auth.json $COMPOSER_HOME
-
-RUN requirements="libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev libcurl3-dev libfreetype6 libfreetype6-dev libicu-dev libxslt1-dev unzip" \
+#ARG userID
+#ARG groupID
+RUN requirements="libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev libcurl3-dev libfreetype6 libfreetype6-dev libicu-dev libxslt1-dev unzip curl" \
     && apt-get -y update \
     && apt-get install -y git \
     && apt-get install -y $requirements \
@@ -24,16 +22,38 @@ RUN requirements="libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev l
     && docker-php-ext-install bcmath \
     && docker-php-ext-install sockets
 
-#RUN  composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition $INSTALL_DIR
-# RUN cd $INSTALL_DIR \
-#     && find . -type d -exec chmod 770 {} \; \
-#     && find . -type f -exec chmod 660 {} \; \
-#     && chmod u+x bin/magento
+RUN curl -sS https://getcomposer.org/installer | \
+  php --  --install-dir=$COMPOSER_HOME --filename=composer
+COPY ./auth.json $COMPOSER_HOME
 
-WORKDIR $INSTALL_DIR
-COPY "memory-limit-php.ini" "/usr/local/etc/php/conf.d/memory-limit-php.ini"
+RUN echo 127.0.0.1 www.magento.test.com magento.test.com >> "/etc/hosts"
+COPY "magento.test.com.conf" "/etc/apache2/sites-available/magento.test.com.conf"
+COPY "apache2.conf" "/etc/apache2/apache2.conf"
+RUN rm -rf "/etc/apache2/sites-available/000-default.conf"
+RUN rm -rf "/etc/apache2/sites-available/default-ssl.conf"
+
+COPY ./php.ini /usr/local/etc/php/php.ini
 
 
 # RUN composer config http-basic.repo.magento.com adf97a28c4f6f0c1e6a8f3d9f11cc448 bdec1caff6c7d5632054b1c08ed4cf7b
 # RUN bin/magento sampledata:deploy
+#RUN a2enmod rewrite
+# RUN groupadd -g 1000 magento \
+#  && useradd -g 1000 -u 1000 -d /var/www -s /bin/bash magento
+#RUN useradd -d /var/www --uid ${userID} -g www-data magento
+#RUN chgrp -R www-data /var/wwws
+# RUN sed 's/80/8080/' /etc/apache2/apache2.conf
+# RUN sed 's/80/8080/' /etc/apache2/sites-enabled/000-default.conf 
+
+
+
+VOLUME /var/www
+COPY ./app  /var/www/html
+#RUN chown -R magento:magento /var/www
+RUN chmod -R 777 /var/www
 RUN a2enmod rewrite
+WORKDIR $INSTALL_DIR
+RUN chmod u+x bin/magento
+# USER magento:magento
+
+
