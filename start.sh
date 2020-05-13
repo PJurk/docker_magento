@@ -11,16 +11,18 @@ fi
 
 if [ ! -d $WORKDIR ]
 then
-    mkdir $WORKDIR
-    echo "Creating magento project"
-    cd app
-    composer create-project --no-install --repository-url=https://repo.magento.com/ magento/project-community-edition .
-    composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
-    echo "Installing magento dependencies"
-    composer install --no-interaction --ignore-platform-reqs
-    chmod -R 777 ./
-    cd ..
-    docker-compose up -d --build
+    # rm -rf db
+    # #./docker-reset.sh
+    # mkdir $WORKDIR
+    # echo "Creating magento project"
+    # cd app
+    # composer create-project --no-install --repository-url=https://repo.magento.com/ magento/project-community-edition .
+    # composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
+    # echo "Installing magento dependencies"
+    # composer install --no-interaction --ignore-platform-reqs
+    # chmod -R 777 ./
+    # cd ..
+    # docker-compose up -d --build
     docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
     echo "Configuring magento user"
     echo "Deploying sample data"
@@ -36,5 +38,18 @@ then
     ./copyfromcontainer.sh
     echo "Ready"
 else
-    docker-compose up -d
+    docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
+    echo "Configuring magento user"
+    echo "Deploying sample data"
+    docker exec -it my-magento php -dmemory_limit=5G bin/magento sampledata:deploy  
+    echo "Install magento now"
+    docker exec -it my-magento bin/magento setup:install --base-url=$MAGENTO_URL --backend-frontname=$MAGENTO_BACKEND_FRONTNAME --language=$MAGENTO_LANGUAGE --timezone=$MAGENTO_TIMEZONE --currency=$MAGENTO_DEFAULT_CURRENCY --db-host=$MYSQL_HOST --db-name=$MYSQL_DATABASE --db-user=$MYSQL_USER --db-password=$MYSQL_PASSWORD --admin-firstname=$MAGENTO_ADMIN_FIRSTNAME --admin-lastname=$MAGENTO_ADMIN_LASTNAME --admin-email=$MAGENTO_ADMIN_EMAIL --admin-user=$MAGENTO_ADMIN_USERNAME --admin-password=$MAGENTO_ADMIN_PASSWORD
+    echo "Installed configuring"
+    docker exec -it my-magento bin/magento deploy:mode:set developer
+    docker exec -it my-magento bin/magento indexer:reindex
+    docker exec -it my-magento bin/magento setup:static-content:deploy -f
+    docker exec -it my-magento chmod -R 777 ./
+    echo "Magento ready, copying files from container"
+    ./copyfromcontainer.sh
+    echo "Ready"
 fi
