@@ -6,21 +6,39 @@ ENV MAGENTO /bin/magento
 
 #ARG userID
 #ARG groupID
-RUN requirements="libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev libcurl3-dev libfreetype6 libfreetype6-dev libicu-dev libxslt1-dev unzip curl" \
+RUN requirements="libbz2-dev libfreetype6-dev libicu-dev libjpeg62-turbo-dev libssh2-1-dev libsodium-dev  libmcrypt-dev libpng-dev libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev libcurl3-dev libfreetype6 libfreetype6-dev libicu-dev libxslt1-dev libssl-dev lsof default-mysql-client unzip gzip curl git" \
     && apt-get -y update \
-    && apt-get install -y git \
     && apt-get install -y $requirements \
     && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-install pdo_mysql \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=DIR \
     && docker-php-ext-install gd \
-    && docker-php-ext-install mbstring \
-    && docker-php-ext-install zip \
-    && docker-php-ext-install intl \
-    && docker-php-ext-install xsl \
-    && docker-php-ext-install soap \
-    && docker-php-ext-install bcmath \
-    && docker-php-ext-install sockets
+    pdo_mysql \
+    mbstring \
+    zip \
+    intl \
+    xsl \
+    soap \
+    bcmath \
+    sockets \
+    curl \
+    phar  \
+    opcache \
+    pcntl \
+    gettext \
+    bz2 
+    
+RUN pecl channel-update pecl.php.net \
+  && pecl install xdebug
+
+RUN docker-php-ext-enable xdebug \
+  && sed -i -e 's/^zend_extension/\;zend_extension/g' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+  && apt-get install -y nodejs 
+  
+RUN curl -sSLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 \
+  && chmod +x mhsendmail_linux_amd64 \
+  && mv mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
 
 RUN curl -sS https://getcomposer.org/installer | \
   php --  --install-dir=$COMPOSER_HOME --filename=composer
