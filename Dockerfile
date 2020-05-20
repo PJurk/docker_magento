@@ -6,7 +6,7 @@ ENV MAGENTO /bin/magento
 
 #ARG userID
 #ARG groupID
-RUN requirements="libbz2-dev libfreetype6-dev libicu-dev libjpeg62-turbo-dev libssh2-1-dev libsodium-dev  libmcrypt-dev libpng-dev libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev libcurl3-dev libfreetype6 libfreetype6-dev libicu-dev libxslt1-dev libssl-dev lsof default-mysql-client unzip gzip curl git" \
+RUN requirements="libbz2-dev libfreetype6-dev libicu-dev libjpeg62-turbo-dev libssh2-1-dev libsodium-dev  libmcrypt-dev libpng-dev libpng++-dev libzip-dev libmcrypt-dev libmcrypt4 libjpeg-dev libcurl3-dev libfreetype6 libfreetype6-dev libicu-dev libxslt1-dev libssl-dev lsof default-mysql-client unzip gzip curl git cron" \
     && apt-get -y update \
     && apt-get install -y $requirements \
     && rm -rf /var/lib/apt/lists/* \
@@ -46,11 +46,13 @@ COPY ./auth.json $COMPOSER_HOME
 
 RUN echo 127.0.0.1 www.magento.test.com magento.test.com >> "/etc/hosts"
 COPY "magento.test.com.conf" "/etc/apache2/sites-available/magento.test.com.conf"
+COPY "magento.test.com.conf" "/etc/apache2/sites-enabled/magento.test.com.conf"
 COPY "apache2.conf" "/etc/apache2/apache2.conf"
 RUN rm -rf "/etc/apache2/sites-available/000-default.conf"
+RUN rm -rf "/etc/apache2/sites-available/000-enabled.conf"
 RUN rm -rf "/etc/apache2/sites-available/default-ssl.conf"
 
-COPY ./php.ini /usr/local/etc/php/php.ini
+
 
 
 # RUN composer config http-basic.repo.magento.com adf97a28c4f6f0c1e6a8f3d9f11cc448 bdec1caff6c7d5632054b1c08ed4cf7b
@@ -66,6 +68,8 @@ COPY ./php.ini /usr/local/etc/php/php.ini
 
 
 VOLUME /var/www
+COPY ./php.ini /usr/local/etc/php/php.ini
+COPY cronstart /usr/local/bin/
 COPY ./app  /var/www/html
 #RUN chown -R magento:magento /var/www
 RUN chmod -R 777 /var/www

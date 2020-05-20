@@ -3,8 +3,8 @@
 source ./env
 WORKDIR=./app
 
-PUBLIC_KEY=
-PRIVATE_KEY=
+PUBLIC_KEY=4e6887bd810261a9c6f04f6efa9b73dd
+PRIVATE_KEY=bf2f47b7f4653053ab2cc827f78b26a0
 
 if [ ! -f auth.json ]
 then
