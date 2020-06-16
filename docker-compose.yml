@@ -1,8 +1,6 @@
 version: '3.0'
 services:
   PHPmagento:
-    build: 
-      context: .
     container_name: my-magento
     image: pjurk/magento2-app-test
     links:
@@ -12,14 +10,14 @@ services:
     ports:
       - "80:80"
     volumes:  
-    - magento-app:/var/www/html
+    - /home/patryk/docker_magento/app:/var/www/html
     #- magento-tests:/app/dev/tests/acceptance/tests/_output/allure-results
     env_file:
       - env
   db:
     image: mysql:5.7
     volumes:
-      - ./db:/var/lib/mysql
+      - /home/patryk/docker_magento/db:/var/lib/mysql
     env_file:
       - env
     command: --innodb_use_native_aio=0
