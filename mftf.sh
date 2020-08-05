@@ -16,5 +16,4 @@ sed 's/#//' docker-compose.yml >> temp.yml
 mv docker-compose.yml old-docker-compose.yml
 mv temp.yml docker-compose.yml
 docker-compose up -d
-./copyfromcontainer.sh
 docker exec -it my-magento vendor/bin/codecept run functional -c dev/tests/acceptance/codeception.yml

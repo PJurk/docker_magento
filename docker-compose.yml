@@ -1,26 +1,32 @@
 version: '3.0'
 services:
   PHPmagento:
+    build: 
+      context: ./Docker/Magento
     container_name: my-magento
     image: pjurk/magento2-app-test
     links:
       - db
       - mailhog
+      - elasticsearch
       #- chrome
     ports:
       - "80:80"
     volumes:  
-    - /home/patryk/docker_magento/app:/var/www/html
+    - ./app:/var/www/html
     #- magento-tests:/app/dev/tests/acceptance/tests/_output/allure-results
     env_file:
       - env
   db:
     image: mysql:5.7
     volumes:
-      - /home/patryk/docker_magento/db:/var/lib/mysql
+      - ./db:/var/lib/mysql
     env_file:
       - env
-    command: --innodb_use_native_aio=0
+    command: 
+      - "--innodb_use_native_aio=0"
+      - "--innodb_buffer_pool_size=10M"
+      - "--innodb_log_file_size=100M"
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
@@ -33,6 +39,16 @@ services:
     ports:
       - "1025"
       - "8025:8025"
+  elasticsearch:
+    build: 
+      context: ./Docker/Elastic
+      dockerfile: Dockerfile
+    image: pjurk/magento-elastic
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "discovery.type=single-node"
   #chrome:
   #  image: selenium/standalone-chrome:3.141.59
   #  container_name: chrome
