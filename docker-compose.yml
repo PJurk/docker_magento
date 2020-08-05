@@ -1,19 +1,28 @@
 version: '3.0'
 services:
-  PHPmagento:
-    build: 
-      context: ./Docker/Magento
+  Apache:
+    build: ./Docker/Apache
+    container_name: magento2-apache
+    image: pjurk/apache
+    ports:
+      - "80:80"
+    links:
+      - Magento
+      - db
+    volumes:
+      - ./app:/var/www/html
+
+  Magento:
+    build: ./Docker/Magento
     container_name: my-magento
-    image: pjurk/magento2-app-test
+    image: pjurk/magento2-app
     links:
       - db
       - mailhog
       - elasticsearch
       #- chrome
-    ports:
-      - "80:80"
     volumes:  
-    - ./app:/var/www/html
+    - ./app:/app
     #- magento-tests:/app/dev/tests/acceptance/tests/_output/allure-results
     env_file:
       - env
@@ -40,9 +49,7 @@ services:
       - "1025"
       - "8025:8025"
   elasticsearch:
-    build: 
-      context: ./Docker/Elastic
-      dockerfile: Dockerfile
+    build: ./Docker/Elastic
     image: pjurk/magento-elastic
     ports:
       - "9200:9200"

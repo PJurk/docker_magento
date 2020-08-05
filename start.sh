@@ -28,7 +28,7 @@ then
     # docker exec -it my-magento php -dmemory_limit=5G bin/magento sampledata:deploy  
     echo "Installing magento"
     chmod -R 777 ./
-    # . ./Scripts/install.sh
+    . ./Scripts/install.sh
     echo "Ready"
 else
     docker-compose up -d --build
