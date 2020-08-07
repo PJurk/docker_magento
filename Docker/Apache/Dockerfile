@@ -6,9 +6,10 @@ LABEL description="Local magento 2.4 setup"
 LABEL version="1.0.0"
 
 RUN apt-get update && apt-get install -y \
-  curl \
-  libnss3-tools \
-  openssl
+    curl \
+    libnss3-tools \
+    openssl \
+    libapache2-mod-wsgi
 
 RUN echo 127.0.0.1 www.magento.test.com magento.test.com >> "/etc/hosts"
 COPY "magento.test.com.conf" "/etc/apache2/sites-available/magento.test.com.conf"

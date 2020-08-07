@@ -14,16 +14,18 @@ fi
 
 if [ ! -d $WORKDIR ]
 then
-    mkdir $WORKDIR
+    # mkdir $WORKDIR
     echo "Creating magento project"
-    cd app
-    composer create-project --no-install --repository-url=https://repo.magento.com/ magento/project-community-edition .
-    composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
-    echo "Installing magento dependencies"
-    composer install --no-interaction --ignore-platform-reqs
-    cd ..
+    # cd app
     docker-compose up -d --build
+    docker exec -it my-magento composer create-project --no-install --repository-url=https://repo.magento.com/ magento/project-community-edition .
     docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
+    # composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
+    echo "Installing magento dependencies"
+    docker exec -it my-magento composer install --no-interaction --ignore-platform-reqs
+    cd ..
+    # docker-compose up -d --build
+    # docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
     echo "Deploying sample data"
     # docker exec -it my-magento php -dmemory_limit=5G bin/magento sampledata:deploy  
     echo "Installing magento"

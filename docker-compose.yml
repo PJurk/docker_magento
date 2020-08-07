@@ -9,6 +9,7 @@ services:
     links:
       - Magento
       - db
+      - elasticsearch
     volumes:
       - ./app:/var/www/html
 
