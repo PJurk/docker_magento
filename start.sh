@@ -1,4 +1,5 @@
 #Use docker reset script if you are using docker toolbox, otherwise composer process inside the container will be killed
+# sudo  ln -s /mnt/c/Program\ Files/Docker/Docker/resources/bin/docker-credential-desktop.exe /usr/bin/docker-credential-desktop.exe
 
 source ./env
 WORKDIR=./app
