@@ -1,18 +1,5 @@
 version: '3.0'
 services:
-  # Apache:
-  #   build: ./Docker/Apache
-  #   container_name: magento2-apache
-  #   image: pjurk/apache
-  #   ports:
-  #     - "80:80"
-  #   links:
-  #     - Magento
-  #     - db
-  #     - elasticsearch
-  #   volumes:
-  #     - ./app:/var/www/html
-
   Magento:
     build: ./Docker/Magento
     container_name: my-magento
@@ -79,6 +66,5 @@ services:
   #  volumes:
   #    - magento-tests:/app/allure-results
 
-volumes: 
-  magento-app:
+# volumes:
   #magento-tests:

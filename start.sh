@@ -1,38 +1,31 @@
-#Use docker reset script if you are using docker toolbox, otherwise composer process inside the container will be killed
-# sudo  ln -s /mnt/c/Program\ Files/Docker/Docker/resources/bin/docker-credential-desktop.exe /usr/bin/docker-credential-desktop.exe
+
+ln -s /mnt/c/Program\ Files/Docker/Docker/resources/bin/docker-credential-desktop.exe /usr/bin/docker-credential-desktop.exe
 
 source ./env
 WORKDIR=./app
 
-
-PUBLIC_KEY=4e6887bd810261a9c6f04f6efa9b73dd
-PRIVATE_KEY=bf2f47b7f4653053ab2cc827f78b26a0
-
-if [ ! -f auth.json ]
+if [ ! -f ./Docker/Magento/auth.json ]
 then
-    echo "{ \"http-basic\": { \"repo.magento.com\": {\"username\": \"$PUBLIC_KEY\",\"password\": \"$PRIVATE_KEY\"}}}" >> auth.json
+    echo "{ \"http-basic\": { \"repo.magento.com\": {\"username\": \"$PUBLIC_KEY\",\"password\": \"$PRIVATE_KEY\"}}}" >> ./Docker/Magento/auth.json
 fi
 
 if [ ! -d $WORKDIR ]
 then
-    # mkdir $WORKDIR
     echo "Creating magento project"
-    # cd app
     docker-compose up -d --build
     docker exec -it my-magento composer create-project --no-install --repository-url=https://repo.magento.com/ magento/project-community-edition .
     docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
-    # composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
     echo "Installing magento dependencies"
     docker exec -it my-magento composer install --no-interaction --ignore-platform-reqs
-    cd ..
-    # docker-compose up -d --build
-    # docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
-    echo "Deploying sample data"
-    # docker exec -it my-magento php -dmemory_limit=5G bin/magento sampledata:deploy  
+    if [ DEPLOY_SAMPLE_DATA ]
+        then
+        echo "Deploying sample data"
+        docker exec -it my-magento php -dmemory_limit=5G bin/magento sampledata:deploy  
+        fi
     echo "Installing magento"
     chmod -R 777 ./
     . ./Scripts/install.sh
     echo "Ready"
 else
-    docker-compose up -d --build
+    docker-compose up -d
 fi

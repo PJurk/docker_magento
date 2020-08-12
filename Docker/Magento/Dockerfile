@@ -4,11 +4,9 @@ LABEL MAINTAINER="Patryk Jurkiewicz"
 LABEL description="Local magento 2.4 setup" 
 LABEL version="1.0.0"
 
-ENV INSTALL_DIR /app
+ENV INSTALL_DIR /var/www/html
 ENV COMPOSER_HOME /usr/local/bin
 ENV MAGENTO /bin/magento
-ENV NVM_DIR /.nvm
-ENV NODE_VER 14.7.0
 
 RUN apt-get -y update && \
     apt-get install -y  \
@@ -41,10 +39,6 @@ RUN apt-get -y update && \
     curl \
     git \ 
     cron
-
-RUN rm -rf /var/lib/apt/lists/* && \
-    mkdir ${NVM_DIR} && \
-    rm /bin/sh && ln -s /bin/bash /bin/sh
     
 # RUN apt-get install -y libonig-dev
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
@@ -64,6 +58,9 @@ RUN docker-php-ext-install \
     gettext \
     bz2 \
     gd
+
+RUN rm -rf /var/lib/apt/lists/* && \
+    rm /bin/sh && ln -s /bin/bash /bin/sh
 
 RUN pecl channel-update pecl.php.net && \
     pecl install xdebug
@@ -106,16 +103,13 @@ RUN rm -rf "/etc/apache2/sites-available/000-default.conf"
 RUN rm -rf "/etc/apache2/sites-available/000-enabled.conf"
 RUN rm -rf "/etc/apache2/sites-available/default-ssl.conf"
 
-
 RUN a2enmod rewrite
-
-
-
 
 # RUN  printf '* */1 * * * php /var/www/html/update/cron.php\n' >> /etc/crontab \
 #   && printf '* */1 * * * php /var/www/html/bin/magento cron:run\n' >> /etc/crontab \
 #   && printf '* */1 * * * php /var/www/html/bin/magento setup:cron:run\n#\n' >> /etc/crontab \
-# RUN service cron start  
+# RUN service cron start
+
 WORKDIR $INSTALL_DIR
 
 

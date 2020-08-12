@@ -7,7 +7,7 @@ definer_user=magento
 definer_host=%
 suid=0
 with_check_option=0
-timestamp=2020-08-11 08:10:41
+timestamp=2020-08-11 20:53:38
 create-version=1
 source=SELECT\n                    DISTINCT    \n                      legacy_stock_status.product_id,\n                      legacy_stock_status.website_id,\n                      legacy_stock_status.stock_id,\n                      legacy_stock_status.qty quantity,\n                      legacy_stock_status.stock_status is_salable,\n                      product.sku\n                    FROM cataloginventory_stock_status legacy_stock_status\n                      INNER JOIN catalog_product_entity product\n                        ON legacy_stock_status.product_id = product.entity_id
 client_cs_name=utf8
