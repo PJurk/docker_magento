@@ -6,7 +6,7 @@
 
 * Zainstalowana w WSL 2 dystrybucja linuksa Debian albo Ubuntu
 
-* Zainstalowany [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows "Docker Desktop") i aktywowany w wybranej dystrybucji [instrukcja](https://docs.docker.com/docker-for-windows/wsl/ "Instrukcja aktywacji")
+* Zainstalowany [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows "Docker Desktop") i aktywowany w wybranej dystrybucji: [Instrukcja](https://docs.docker.com/docker-for-windows/wsl/ "Instrukcja aktywacji")
 
 
 ## Instalacja
@@ -34,7 +34,7 @@ PHPMyAdmin będzie dostępne pod adresem `magento.test.com:8580`.
 
 ## Użytkowanie
 
-[Praca zdalna]: # 
+[Praca zdalna]: / 
 Do pracy z Magento trzeba połączyć się z dystrybucją linuksa w WSL. VSCode i PHPStorm zapewniają narzędzia do takiej pracy.
 
 * [PHPStorm z WSL](https://blog.jetbrains.com/phpstorm/2020/06/phpstorm-2020-1-2-is-released/ "Instrukcja połączenia z WSL w PHPStorm")
