@@ -3,5 +3,4 @@ docker exec -it my-magento bin/magento setup:install --base-url=$MAGENTO_URL --b
 docker exec -it my-magento bin/magento deploy:mode:set developer
 docker exec -it my-magento bin/magento module:disable Magento_TwoFactorAuth
 docker exec -it my-magento bin/magento cache:flush
-docker exec -it my-magento bin/magento chmod -R 777 ./
 chmod -R 777 ./

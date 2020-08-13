@@ -15,7 +15,7 @@ Sklonuj albo pobierz repozytorium w wybranej dystrybucji
 
     git clone https://github.com/PJurk/docker_magento.git
 
-Używając [VSCode albo PHPStorm][Praca Zdalna] połącz się z WSL i otwórz folder projektu.
+Używając [VSCode albo PHPStorm](#Użytkowanie) połącz się z WSL i otwórz folder projektu.
 
 W pliku `env` dodaj klucze z Magento Marketplace w pola `PUBLIC_KEY` i `PRIVATE_KEY`
 
@@ -34,11 +34,13 @@ PHPMyAdmin będzie dostępne pod adresem `magento.test.com:8580`.
 
 ## Użytkowanie
 
-[Praca zdalna]: / 
 Do pracy z Magento trzeba połączyć się z dystrybucją linuksa w WSL. VSCode i PHPStorm zapewniają narzędzia do takiej pracy.
 
 * [PHPStorm z WSL](https://blog.jetbrains.com/phpstorm/2020/06/phpstorm-2020-1-2-is-released/ "Instrukcja połączenia z WSL w PHPStorm")
 * [VSCode z WSL](https://code.visualstudio.com/docs/remote/wsl-tutorial "Instrukcja połączenia z WSL w VSCode")
+
+Magento do pracy będzie się znajdowało w folderze `app`, wszystkie zmiany wprowadzone w tym folderze są odzwierciedlane w kontenerze. Tak samo wszelkie zmiany w plikach w kontenerze będą odzwierciedlone w tym folderze.
+Folder `db` zawiera zapisaną bazę danych.
 
 W celu używania CLI Magento trzeba użyć komendy:
 
@@ -56,6 +58,11 @@ Po skończonej pracy kontenery można wyłączyć komendą
 
     docker-compose down
 
+Możesz uzyskać dostęp do plików w WSL 2 otwierając w nim Windows explorer:
+
+* Używając w folderze WSL komendy `explorer.exe .`
+* Wpisując w explorerze ścieżkę `\\wsl$`
+
 ## Konfiguracja
 
 
@@ -69,6 +76,7 @@ W celu zmiany adresu sklepu przed instalacją trzeba go zmienić w pliku `env` o
 Jeśli zmieniamy adres po instalacji to trzeba zmodyfikować pliki Apache. Następnie należy zbudować obrazy Dockera na nowo komendą
     
     docker-compose build
+    
 I zmienić adres sklepu w konfiguracji Magento.
 
-Porty zmapowane z portami na naszym komputerze można zmienić w pliku `docker-compose.yml`.
+Porty zmapowane z portami na naszym komputerze i połączone foldery można zmienić w pliku `docker-compose.yml`.

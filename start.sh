@@ -17,7 +17,7 @@ then
     docker exec -it my-magento composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
     echo "Installing magento dependencies"
     docker exec -it my-magento composer install --no-interaction --ignore-platform-reqs
-    if [ DEPLOY_SAMPLE_DATA ]
+    if [ "$DEPLOY_SAMPLE_DATA" = true ]
         then
         echo "Deploying sample data"
         docker exec -it my-magento php -dmemory_limit=5G bin/magento sampledata:deploy  
