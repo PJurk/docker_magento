@@ -32,9 +32,6 @@ Docker zbuduje obrazy, aktywuje kontenery, pobierze i zainstaluje Magento 2.4. Z
 Po skończeniu instalacji magento będzie dostępnie pod adresem `magento.test.com`, a panel administratorski `magento.text.com/admin`.
 PHPMyAdmin będzie dostępne pod adresem `magento.test.com:8580`.
 
-Po instalacji włączamy system komendą 
-    
-    docker-compose up
 
 ## Użytkowanie
 
@@ -61,6 +58,11 @@ Tak można używać komend bezpośrednio w kontenerze, można wyjść z niego ko
 Po skończonej pracy kontenery można wyłączyć komendą
 
     docker-compose down
+    
+ 
+Po instalacji włączamy system komendą 
+    
+    docker-compose up
 
 Możesz uzyskać dostęp do plików w WSL 2 otwierając w nim Windows explorer:
 
