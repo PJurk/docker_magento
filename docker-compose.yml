@@ -27,6 +27,7 @@ services:
       - "--innodb_use_native_aio=0"
       - "--innodb_buffer_pool_size=10M"
       - "--innodb_log_file_size=100M"
+      - "--secure-file-priv=NULL"
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
