@@ -41,8 +41,7 @@ services:
       - "1025"
       - "8025:8025"
   elasticsearch:
-    # build: ./Docker/Elastic
-    image: elasticsearch:7.8.1 #pjurk/magento-elastic
+    image: elasticsearch:7.8.1
     ports:
       - "9200:9200"
       - "9300:9300"
