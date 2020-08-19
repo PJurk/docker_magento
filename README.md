@@ -32,6 +32,10 @@ Docker zbuduje obrazy, aktywuje kontenery, pobierze i zainstaluje Magento 2.4. Z
 Po skończeniu instalacji magento będzie dostępnie pod adresem `magento.test.com`, a panel administratorski `magento.text.com/admin`.
 PHPMyAdmin będzie dostępne pod adresem `magento.test.com:8580`.
 
+Po instalacji włączamy system komendą 
+    
+    docker-compose up
+
 ## Użytkowanie
 
 Do pracy z Magento trzeba połączyć się z dystrybucją linuksa w WSL. VSCode i PHPStorm zapewniają narzędzia do takiej pracy.
