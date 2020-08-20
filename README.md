@@ -67,7 +67,7 @@ Po instalacji włączamy system komendą
 Możesz uzyskać dostęp do plików w WSL 2 otwierając w nim Windows explorer:
 
 * Używając w folderze WSL komendy `explorer.exe .`
-* Wpisując w explorerze ścieżkę `\\wsl$\`
+* Wpisując w explorerze ścieżkę `\\$wsl\`
 
 ## Konfiguracja
 
