@@ -1,3 +1,4 @@
+
 # Magento 2.4 Docker Compose setup on Windows 10
 
 ## Wymagania
@@ -27,13 +28,26 @@ Uruchom skrypt instalacji
 
     sudo bash start.sh
 
-Docker zbuduje obrazy, aktywuje kontenery, pobierze i zainstaluje Magento 2.4. Z względu na dużą ilość plików do pobrania to chwilę zajmie. 
+Docker zbuduje obrazy, aktywuje kontenery, pobierze i zainstaluje Magento 2.4. Z względu na dużą ilość plików do pobrania to chwilę zajmie.
 
 Po skończeniu instalacji magento będzie dostępnie pod adresem `magento.test.com`, a panel administratorski `magento.text.com/admin`.
 PHPMyAdmin będzie dostępne pod adresem `magento.test.com:8580`.
 
-
 ## Użytkowanie
+
+### XDEBUG
+
+Do działania XDEBUG trzeba przed włączeniem kontenerów dockera zmienić IP hosta w pliku `docker-compose.yml`
+
+      XDEBUG_CONFIG: "remote_host={IP}" 
+
+Komenda generująca obecne IP WSL2
+
+    hostname -I 
+
+Z każdym włączeniem WSL2 otrzymuje nowe IP
+maszyny wirutalnej. Stąd potrzeba jego poprawy.
+
 
 Do pracy z Magento trzeba połączyć się z dystrybucją linuksa w WSL. VSCode i PHPStorm zapewniają narzędzia do takiej pracy.
 
@@ -70,7 +84,6 @@ Możesz uzyskać dostęp do plików w WSL 2 otwierając w nim Windows explorer:
 * Wpisując w explorerze ścieżkę `\\$wsl\`
 
 ## Konfiguracja
-
 
 Zmienne instalacyjne możesz dostosowywać zmieniając je w pliku `env`.
 Wszystkie aktywne serwisy możesz podejrzeć w pliku `docker-compose.yml` wraz z wystawionymi przez nie portami.
