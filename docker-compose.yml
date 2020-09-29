@@ -5,6 +5,8 @@ services:
     container_name: my-magento
     image: pjurk/magento2-app
     tty: true
+    environment: 
+      XDEBUG_CONFIG: "remote_host=172.26.204.94" #hostname -I address
     ports:
       - "80:80"
     links:
@@ -16,7 +18,7 @@ services:
     - ./app:/var/www/html
     #- magento-tests:/app/dev/tests/acceptance/tests/_output/allure-results
     env_file:
-      - env
+      - env 
   db:
     image: mysql:8.0.21
     volumes:
@@ -27,6 +29,7 @@ services:
       - "--innodb_use_native_aio=0"
       - "--innodb_buffer_pool_size=10M"
       - "--innodb_log_file_size=100M"
+      - "--secure-file-priv=NULL"
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
@@ -40,8 +43,7 @@ services:
       - "1025"
       - "8025:8025"
   elasticsearch:
-    build: ./Docker/Elastic
-    image: pjurk/magento-elastic
+    image: elasticsearch:7.8.1
     ports:
       - "9200:9200"
       - "9300:9300"
