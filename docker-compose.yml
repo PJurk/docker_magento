@@ -20,7 +20,7 @@ services:
     env_file:
       - env 
   db:
-    image: mysql:8.0.21
+    image: mysql:5.7.28
     volumes:
       - ./db:/var/lib/mysql
     env_file:
@@ -42,13 +42,6 @@ services:
     ports:
       - "1025"
       - "8025:8025"
-  elasticsearch:
-    image: elasticsearch:7.8.1
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    environment:
-      - "discovery.type=single-node"
   #chrome:
   #  image: selenium/standalone-chrome:3.141.59
   #  container_name: chrome
