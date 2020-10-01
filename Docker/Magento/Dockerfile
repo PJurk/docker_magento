@@ -11,6 +11,7 @@ ENV MAGENTO /bin/magento
 RUN rm -rf "/etc/apache2/sites-available/000-default.conf" && \
     rm -rf "/etc/apache2/sites-available/000-enabled.conf" && \
     rm -rf "/etc/apache2/sites-available/default-ssl.conf" && \
+    #Zmien adres strony na twoją nową strone "www.magento.test.com magento.test.com" >> "www.moj.adres.strony.com moj.adres.strony.com"
     echo 127.0.0.1 www.magento.test.com magento.test.com >> "/etc/hosts" && \ 
     a2enmod rewrite
 
@@ -76,17 +77,11 @@ RUN curl -sSLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mh
 COPY ./php.ini /usr/local/etc/php/
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 COPY ./auth.json $COMPOSER_HOME
+# Zmienic nazwy kopiowanych plikow konfiguracyjnych na nowo ustawione 
+# "magento.test.com.conf" "/etc/apache2/sites-available/magento.test.com.conf"
+# "moj.nowy.adres.conf" "/etc/apache2/sites-available/moj.nowy.adres.conf"
 COPY "magento.test.com.conf" "/etc/apache2/sites-available/magento.test.com.conf"
 COPY "magento.test.com.conf" "/etc/apache2/sites-enabled/magento.test.com.conf"
 COPY "apache2.conf" "/etc/apache2/apache2.conf"
 
-
-
-# RUN  printf '* */1 * * * php /var/www/html/update/cron.php\n' >> /etc/crontab \
-#   && printf '* */1 * * * php /var/www/html/bin/magento cron:run\n' >> /etc/crontab \
-#   && printf '* */1 * * * php /var/www/html/bin/magento setup:cron:run\n#\n' >> /etc/crontab \
-# RUN service cron start
-
 WORKDIR $INSTALL_DIR
-
-
