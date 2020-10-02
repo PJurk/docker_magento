@@ -57,12 +57,22 @@ Do działania XDEBUG trzeba przed włączeniem kontenerów dockera zmienić IP h
 
       XDEBUG_CONFIG: "remote_host={IP}" 
 
+#### Dla VS Code
+
 Komenda generująca obecne IP WSL2
 
     hostname -I 
 
 Z każdym włączeniem WSL2 otrzymuje nowe IP
 maszyny wirutalnej. Stąd potrzeba jego poprawy.
+
+#### Dla PHPStorm
+
+Remote Host ustaw na
+    
+    remote_host=host.docker.internal
+
+W ustawieniach PHP Storm: Setting > PHP|Server, dla adresu strony włącz mapowanie ścieżek.
 
 ### Praca z WSL 2
 
