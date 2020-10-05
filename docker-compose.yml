@@ -12,7 +12,7 @@ services:
     links:
       - db
       - mailhog
-      - elasticsearch
+      #- elasticsearch
       #- chrome
     volumes:  
     - ./app:/var/www/html
