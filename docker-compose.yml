@@ -6,13 +6,13 @@ services:
     image: pjurk/magento2-app
     tty: true
     environment: 
-      XDEBUG_CONFIG: "remote_host=172.26.204.94" #hostname -I address
+      XDEBUG_CONFIG: "remote_host=host.docker.internal" #hostname -I address
     ports:
       - "80:80"
     links:
       - db
       - mailhog
-      - elasticsearch
+      # - elasticsearch
       #- chrome
     volumes:  
     - ./app:/var/www/html

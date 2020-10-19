@@ -1,4 +1,4 @@
-FROM php:7.4.9-apache-buster
+FROM php:7.3-apache-buster
 
 LABEL MAINTAINER="Patryk Jurkiewicz" 
 LABEL description="Local magento 2.4 setup" 
@@ -41,7 +41,7 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh && \
     curl \
     git \ 
     cron && \ 
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \ 
+    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \ 
     docker-php-ext-install \
     pdo_mysql \
     zip \
