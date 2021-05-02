@@ -7,46 +7,45 @@ LABEL version="1.0.0"
 ENV INSTALL_DIR /var/www/html
 ENV COMPOSER_HOME /usr/local/bin
 ENV MAGENTO /bin/magento
+ENV TZ UTC
 
-RUN rm -rf "/etc/apache2/sites-available/000-default.conf" && \
-    rm -rf "/etc/apache2/sites-available/000-enabled.conf" && \
-    rm -rf "/etc/apache2/sites-available/default-ssl.conf" && \
-    #Zmien adres strony na twoją nową strone "www.magento.test.com magento.test.com" >> "www.moj.adres.strony.com moj.adres.strony.com"
-    echo 127.0.0.1 www.magento.test.com magento.test.com >> "/etc/hosts" && \ 
-    a2enmod rewrite
+COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY ./apache2.conf /etc/apache2/apache2.conf
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \   
+        && a2enmod rewrite
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh && \
     apt-get -y update && \
     apt-get install -y  \
+    apt-transport-https \
+    libcurl3-dev  \
+    libxml2-dev  \
+    libgd-dev   \
+    libicu-dev   \
+    libonig-dev     \
+    libzip-dev    \
+    libnice-dev    \
     libbz2-dev \
-    libicu-dev \
-    libsodium-dev \
-    libmcrypt-dev \
-    libpng++-dev \
-    libzip-dev \
-    libmcrypt4 \
-    libjpeg-dev \
-    libcurl3-dev \
-    libfreetype6 \
-    libfreetype6-dev \
-    libicu-dev \
-    libxslt1-dev \
     libssl-dev \
-    lsof \
-    default-mysql-client \
+    libxslt1-dev \
+    openssl    \
+    lsof    \
+    sed    \
+    tar    \
     wget \
     gnupg2 \
     unzip \
     gzip \
     curl \
     git \ 
-    cron && \ 
+    cron  && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \ 
     docker-php-ext-install \
     pdo_mysql \
+    xsl \
+    gd \
     zip \
     intl \
-    xsl \
     soap \
     bcmath \
     sockets \
@@ -55,33 +54,29 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh && \
     opcache \
     pcntl \
     gettext \
-    bz2 \
-    gd && \
-    rm -rf /var/lib/apt/lists/*
- 
-RUN pecl install xdebug \
+    bz2 && \
+    pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >> /usr/local/etc/php/conf.d/xdebug.ini && \ 
+    pecl install redis && docker-php-ext-enable redis && \
     curl -sL https://deb.nodesource.com/setup_current.x | bash - && \
     apt-get update -y && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/* && \
-    npm install -g yarn 
-
-RUN curl -sSLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 && \
+    npm install -g yarn && \
+    curl -sSLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 && \
     chmod +x mhsendmail_linux_amd64 && \
     mv mhsendmail_linux_amd64 /usr/local/bin/mhsendmail && \
     curl -sS https://getcomposer.org/installer | \
-    php --  --install-dir=$COMPOSER_HOME --filename=composer
+    php --  --install-dir=$COMPOSER_HOME --filename=composer && \
+    apt-get -y autoremove && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY ./php.ini /usr/local/etc/php/
-COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY "./php.ini" "$PHP_INI_DIR/conf.d/"
 COPY ./auth.json $COMPOSER_HOME
-# Zmienic nazwy kopiowanych plikow konfiguracyjnych na nowo ustawione 
-# "magento.test.com.conf" "/etc/apache2/sites-available/magento.test.com.conf"
-# "moj.nowy.adres.conf" "/etc/apache2/sites-available/moj.nowy.adres.conf"
-COPY "magento.test.com.conf" "/etc/apache2/sites-available/magento.test.com.conf"
-COPY "magento.test.com.conf" "/etc/apache2/sites-enabled/magento.test.com.conf"
-COPY "apache2.conf" "/etc/apache2/apache2.conf"
+
+RUN chmod -Rf 777  /var/www /var/www/.* 	&& chown -Rf www-data:www-data /var/www /var/www/.* 	&& usermod -u 1000 www-data 	&& chsh -s /bin/bash www-data	&& a2enmod rewrite 	&& a2enmod headers
+
 
 WORKDIR $INSTALL_DIR

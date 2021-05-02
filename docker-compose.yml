@@ -1,28 +1,31 @@
-version: '3.0'
+version: '3'
+
 services:
   Magento:
     build: ./Docker/Magento
     container_name: my-magento
     image: pjurk/magento2-app
-    tty: true
     environment: 
-      XDEBUG_CONFIG: "remote_host=172.26.204.94" #hostname -I address
+      XDEBUG_CONFIG: "client_host=${XDEBUG_HOST}" #hostname -I address
     ports:
       - "80:80"
+    env_file:
+      - env
     links:
       - db
       - mailhog
       - elasticsearch
-      #- chrome
     volumes:  
-    - ./app:/var/www/html
-    #- magento-tests:/app/dev/tests/acceptance/tests/_output/allure-results
-    env_file:
-      - env 
+    - ./:/var/www/html
+    networks:
+      - local-magento
+    depends_on: 
+      - db
+      - redis
   db:
     image: mysql:8.0.21
     volumes:
-      - ./db:/var/lib/mysql
+      - mag-mysql:/var/lib/mysql
     env_file:
       - env
     command: 
@@ -30,18 +33,32 @@ services:
       - "--innodb_buffer_pool_size=10M"
       - "--innodb_log_file_size=100M"
       - "--secure-file-priv=NULL"
+    networks:
+      - local-magento
+  redis:
+        image: "redis:alpine"
+        ports:
+            - "${FORWADR_REDIS_PORT:-6379}:6379"
+        volumes:
+            - mag-redis:/data
+        networks:
+            - local-magento
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     ports:
       - "8580:80"
-    links:
-      - db  
+    networks:
+      - local-magento
+    depends_on: 
+      - db
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "1025"
+      - "1025:1025"
       - "8025:8025"
+    networks:
+      - local-magento
   elasticsearch:
     image: elasticsearch:7.8.1
     ports:
@@ -49,24 +66,14 @@ services:
       - "9300:9300"
     environment:
       - "discovery.type=single-node"
-  #chrome:
-  #  image: selenium/standalone-chrome:3.141.59
-  #  container_name: chrome
-  #  ports:
-  #    - "5900:5900"
-  #  volumes:
-  #    - /dev/shm:/dev/shm
-  #allure:
-  #  image: frankescobar/allure-docker-service
-  #  container_name: magento_allure
-  #  environment:
-  #    CHECK_RESULTS_EVERY_SECONDS: 1
-  #    KEEP_HISTORY: "TRUE"
-  #  ports:
-  #    - "4040:4040"
-  #    - "5050:5050"
-  #  volumes:
-  #    - magento-tests:/app/allure-results
+    networks:
+      - local-magento
 
-# volumes:
-  #magento-tests:
+networks:
+  local-magento:
+    driver: bridge
+volumes:
+   mag-mysql: 
+      driver: local
+   mag-redis: 
+      driver: local
